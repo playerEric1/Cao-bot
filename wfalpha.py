@@ -1,7 +1,12 @@
+import os
+
 import wolframalpha
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Wolfram Alpha credentials and client session Discord_py
-app_id = '44GJT6-5KULL99HGG'
+app_id = os.getenv('WFA_APPID')
 waclient = wolframalpha.Client(app_id)
 
 # Globals for message removal
