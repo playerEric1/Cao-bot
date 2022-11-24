@@ -18,6 +18,7 @@ invalidQueryStrings = ["Nobody knows.", "It's a mystery.", "I have no idea.", "N
                        "I'm afraid I can't let you do that.", "Maybe another time.", "Ask someone else.",
                        "That is anybody's guess.", "Beats me.", "I haven't the faintest idea."]
 
+
 def inquery(arg):
     res = waclient.query(arg)
     return res
