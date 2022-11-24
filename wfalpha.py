@@ -9,6 +9,7 @@ load_dotenv()
 app_id = os.getenv('WFA_APPID')
 waclient = wolframalpha.Client(app_id)
 
+# Globals for message removal
 messageHistory = set()
 computemessageHistory = set()
 previousQuery = ''
