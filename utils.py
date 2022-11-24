@@ -5,7 +5,6 @@ from discord import HTTPException
 
 import settings
 
-
 # Returns a path relative to the bot directory
 def get_rel_path(rel_path):
     return join(settings.BASE_DIR, rel_path)

@@ -1,5 +1,6 @@
 import os
 
+# Invite link
 # https://discord.com/api/oauth2/authorize?client_id=1038261014409519155&permissions=8&scope=bot
 
 # The prefix that will be used to parse commands.
@@ -7,7 +8,7 @@ import os
 COMMAND_PREFIX = "."
 
 # The now playing game. Set this to anything false-y ("", None) to disable it
-NOW_PLAYING = "小便"
+NOW_PLAYING = "大便"
 
 # Base directory. Feel free to use it if you want.
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))

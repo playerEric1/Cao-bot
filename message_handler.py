@@ -40,7 +40,7 @@ def process_message(content):
     if '猴' in content:
         return '有点像广西佬'
     if '看看' in content:
-        return ' [看看牛牛](https://i.imgur.com/4b8eoDX.mp4)'
+        return '看看牛牛 (https://i.imgur.com/4b8eoDX.mp4)'
     if '原神' in content:
         return '老妈保佑，刚刚拿我妈支付宝冲了一发648，一发十连小保底中了钟离，我妈在昏迷中肯定也会开心的，相信她很快就会醒过来！'
     if '原批' in content:
