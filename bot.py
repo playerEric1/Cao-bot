@@ -8,7 +8,6 @@ import asyncio
 import discord
 from dotenv import load_dotenv
 from discord.ext import commands
-from random import randint
 
 CLIENT_PUBLIC_KEY = os.getenv('CLIENT_PUBLIC_KEY')
 
