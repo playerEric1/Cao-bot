@@ -5,19 +5,13 @@ from discord.ext import commands
 
 @commands.command()
 async def random(ctx, arg1=1, arg2=6):
-    num = random.randint(arg1, arg2)
-    await ctx.send(num)
+    # num = random.randint(arg1, arg2) # randint not working?
+    await ctx.send(114514)
 
 
 @commands.command()
 async def hello(ctx):
     await ctx.send(f'Hello {ctx.author.display_name}.')
-
-
-@commands.command()
-async def wiki(ctx, arg="Minecraft"):
-    arg = arg.replace(" ", "_")
-    await ctx.send("https://en.wikipedia.org/wiki/" + arg)
 
 
 @commands.command()
@@ -47,6 +41,5 @@ async def embed(ctx):
 async def setup(bot):
     bot.add_command(random)
     bot.add_command(hello)
-    bot.add_command(wiki)
     bot.add_command(image)
     bot.add_command(embed)

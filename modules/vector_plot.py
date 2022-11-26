@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import discord
-import random
 from discord.ext import commands
 
 
