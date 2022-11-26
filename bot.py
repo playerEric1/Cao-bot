@@ -1,6 +1,6 @@
 import settings
 import message_handler
-import wfalpha
+import func
 
 import sys
 import os
@@ -25,14 +25,14 @@ GUILD = os.getenv('DISCORD_GUILD')
 intents = discord.Intents.all()
 client = commands.Bot(command_prefix='.', intents=intents)
 
+global mute
+mute = False
+
 
 @client.event
 async def on_ready():
     if this.running:
         return
-
-    global mute
-    mute = False
 
     this.running = True
 
@@ -59,7 +59,6 @@ async def on_ready():
 
 @client.event
 async def on_voice_state_update(member, before, after):
-    global mute
     if mute:
         return
 
@@ -93,12 +92,11 @@ async def on_voice_state_update(member, before, after):
 
 @client.event
 async def on_message(message):
-    global mute
     if mute or message.author == client.user:
         return
 
     reply = message_handler.process_message(message.content)
-    if reply is not None:  # will reply something
+    if reply is not None:  # do not send empty messages
         # await asyncio.sleep(len(reply) / 10 + 0.3) # add some delay before sending
         await message.channel.send(reply)
     await client.process_commands(message)  # always process the commands
@@ -106,7 +104,6 @@ async def on_message(message):
 
 @client.event
 async def on_message_delete(message):
-    global mute
     if mute or message.author == client.user:
         return
 
@@ -134,19 +131,8 @@ async def sleep(ctx, arg):
             activity=discord.Game(name=settings.NOW_PLAYING))
 
 
-@client.command()
-async def w(ctx, arg):
-    print("received")
-    text = wfalpha.inquery(arg)
-    for pod in text.pods:
-        for sub in pod.subpods:
-            embed = discord.Embed()
-            embed.set_image(url=sub.img.src)
-            await ctx.send(embed=embed)
-
-
-@client.command()
-@commands.is_owner()
+@client.command(name='close')
+@func.owner()
 async def close(ctx):  # Close the bot
     await ctx.send(f'粪男bot睡觉去啦')
     print("Bot Closed")
@@ -157,20 +143,14 @@ async def close(ctx):  # Close the bot
 async def on_command_error(message, error):
     if isinstance(error, commands.errors.CommandNotFound):
         print(error)
-        return await message.channel.send("Command not found")
+        return await message.channel.send("Command not found!")
     if isinstance(error, commands.errors.MissingRequiredArgument):
         print(error)
-        return await message.channel.send('Not enough arguments, try something else')
+        return await message.channel.send('Not enough arguments!')
     if isinstance(error, commands.errors.MissingPermissions):
         print(error)
-        return await message.channel.send('You do not have permissions for this')
+        return await message.channel.send('You do not have permissions!')
     raise error
-
-
-@client.command()
-async def ping(ctx):
-    await ctx.send(f"pong! {round(client.latency * 1000)}ms")
-    return
 
 
 async def main():
@@ -178,8 +158,9 @@ async def main():
     async with client:
         if __name__ == "__main__":
             # await client.load_extension('modules.daily_math')
+            await client.load_extension('modules.wfalpha')
             await client.load_extension('modules.simple_cog')
-            await client.load_extension('modules.Cat')
+            await client.load_extension('modules.cat')
             print("load cogs!")
             await client.start(TOKEN)
 

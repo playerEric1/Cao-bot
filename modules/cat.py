@@ -1,9 +1,7 @@
-from mimetypes import common_types
 import discord
 from discord.ext import commands
 import json
 import requests
-from datetime import datetime, timedelta
 from random import randint, seed, random
 
 

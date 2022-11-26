@@ -1,4 +1,7 @@
 import os
+import discord
+import random
+from discord.ext import commands
 
 import wolframalpha
 from dotenv import load_dotenv
@@ -19,6 +22,16 @@ invalidQueryStrings = ["Nobody knows.", "It's a mystery.", "I have no idea.", "N
                        "That is anybody's guess.", "Beats me.", "I haven't the faintest idea."]
 
 
-def inquery(arg):
-    res = waclient.query(arg)
-    return res
+@commands.command()
+async def w(ctx, arg):
+    print("received")
+    text = waclient.query(arg)
+    for pod in text.pods:
+        for sub in pod.subpods:
+            embed = discord.Embed()
+            embed.set_image(url=sub.img.src)
+            await ctx.send(embed=embed)
+
+
+async def setup(bot):
+    bot.add_command(w)
