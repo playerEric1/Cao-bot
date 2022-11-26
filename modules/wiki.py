@@ -4,11 +4,13 @@ import wikipedia
 
 
 class Wiki(commands.Cog):
+    """wwwwwwwwwwwwww"""
     def __init__(self, client):
         self.client = client
 
     @commands.command(pass_context=True)
     async def wiki(self, ctx, *args):
+        """wwwwwwwwwwwwww"""
         args_str = '_'.join(args)
         try:
             wiki = wikipedia.page(args_str)

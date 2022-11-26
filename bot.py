@@ -81,6 +81,7 @@ async def main():
             await client.load_extension('modules.wfalpha')
             await client.load_extension('modules.simple_cog')
             await client.load_extension('modules.cat')
+            await client.load_extension('modules.help')
             await client.load_extension('modules.wiki')
             await client.load_extension('modules.utils')
             await client.load_extension('modules.vector_plot')

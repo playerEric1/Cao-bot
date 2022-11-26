@@ -46,7 +46,6 @@ class Events(commands.Cog):
         if reply is not None:  # do not send empty messages
             # await asyncio.sleep(len(reply) / 10 + 0.3) # add some delay before sending
             await message.channel.send(reply)
-        await self.client.process_commands(message)  # always process the commands
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
