@@ -161,6 +161,7 @@ async def main():
             await client.load_extension('modules.wfalpha')
             await client.load_extension('modules.simple_cog')
             await client.load_extension('modules.cat')
+            await client.load_extension('modules.vector_plot')
             print("load cogs!")
             await client.start(TOKEN)
 

@@ -4,11 +4,6 @@ from discord.ext import commands
 
 
 @commands.command()
-async def test(ctx, arg="我还活着"):
-    await ctx.send(arg)
-
-
-@commands.command()
 async def random(ctx, arg1=1, arg2=6):
     num = random.randint(arg1, arg2)
     await ctx.send(num)
@@ -50,7 +45,8 @@ async def embed(ctx):
 
 
 async def setup(bot):
-    bot.add_command(hello)
     bot.add_command(random)
+    bot.add_command(hello)
     bot.add_command(wiki)
+    bot.add_command(image)
     bot.add_command(embed)
