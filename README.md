@@ -15,7 +15,6 @@ It's primary features include:
 - Quick image search
 - Querying Wolfram|Alpha
 - LaTeX rendering
-- A Turing complete calculator
 
 
 [Add the bot to your own server](https://discord.com/oauth2/authorize?client_id=1038261014409519155&permissions=8&scope=bot)
