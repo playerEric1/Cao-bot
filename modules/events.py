@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 import settings
 from modules import message_handler
@@ -30,6 +29,11 @@ class Events(commands.Cog):
                 await default_channel.send("主要人員來啦")
             else:
                 await default_channel.send("次要人員" + member.name + "來啦")
+            channel = member.voice.channel
+            if self.client.user is not member:
+                await default_channel.send("我也來叫")
+                await channel.connect()
+
         elif before.channel is not None and after.channel is None:
             if member.name == "_Ikuta":
                 await default_channel.send("主要人員睡觉去啦")
