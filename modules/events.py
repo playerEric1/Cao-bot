@@ -26,9 +26,9 @@ class Events(commands.Cog):
 
         elif before.channel is None and after.channel is not None:
             if member.name == "_Ikuta":
-                await default_channel.send("主要人員來啦")
+                await default_channel.send("群主來啦")
             else:
-                await default_channel.send("次要人員" + member.name + "來啦")
+                await default_channel.send("" + member.name + "來啦")
             channel = member.voice.channel
             if self.client.user is not member:
                 await default_channel.send("我也來叫")
@@ -36,9 +36,9 @@ class Events(commands.Cog):
 
         elif before.channel is not None and after.channel is None:
             if member.name == "_Ikuta":
-                await default_channel.send("主要人員睡觉去啦")
+                await default_channel.send("群主睡觉去啦")
             else:
-                await default_channel.send("次要人員" + member.name + "睡觉去啦")
+                await default_channel.send("" + member.name + "睡觉去啦")
         print("voice_state_update sent")
 
     @commands.Cog.listener()
