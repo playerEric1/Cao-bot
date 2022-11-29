@@ -15,14 +15,13 @@ this.running = False
 
 # Initialize the client
 print("Starting up...")
-
 load_dotenv()
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
 intents = discord.Intents.all()
-client = commands.Bot(command_prefix='.', intents=intents)
+client = commands.Bot(command_prefix=settings.COMMAND_PREFIX, intents=intents)
 
 
 @client.event
@@ -49,26 +48,26 @@ async def on_ready():
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')  # print all members
     default_channel = client.get_channel(settings.DEFAULT_CHANNEL)  # channel id should be an int
-    await default_channel.send(f'粪男bot上线啦')
+    await default_channel.send(f'我上线啦')
 
 
 @client.command()
 async def sleep(ctx, arg):
-    await ctx.send('粪男bot不能说话啦')
+    await ctx.send('我不能说话啦')
     await client.unload_extension('modules.events')
     await client.change_presence(activity=discord.Game(name="禁言中"))
     await asyncio.sleep(int(arg))
 
     # awake
     await client.load_extension('modules.events')
-    await ctx.send(f'我活啦')
+    await ctx.send('我活啦')
     await client.change_presence(activity=discord.Game(name=settings.NOW_PLAYING))
 
 
 @client.command(name='close')
 @func.owner()
 async def close(ctx):  # Close the bot
-    await ctx.send(f'粪男bot睡觉去啦')
+    await ctx.send('我睡觉去啦')
     print("Bot Closed")
     await client.close()
 

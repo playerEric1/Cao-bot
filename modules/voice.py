@@ -41,15 +41,29 @@ class Voice(commands.Cog):
         # play audio via GTTS of the user's message
         # tts = gTTS(" ".join(args), 'com.au')
         # tts.save('tts.mp3')
-        # audio_source = await discord.FFmpegOpusAudio.from_probe('tts.mp3')
-        # discord.voice_client.play(audio_source)
+        source = await discord.FFmpegOpusAudio.from_probe('demo.mp3',
+                                                          executable='C:\\Users\\Eric_C\\Downloads\\ffmpeg-2022-11-23-git-c8e9cc8d20-full_build\\bin\\ffmpeg.exe',
+                                                          method='fallback')
+        channel.play(source)
+        try:
+            # Lets set the volume to 1
+            channel.source = discord.PCMVolumeTransformer(channel.source)
+            channel.source.volume = 1
         # raw = audio_api.on_message(raw_class)
-        f = open('b64.txt', 'r')
-        raw = f.read()
+        # f = open('b64.txt', 'r')
+        # raw = f.read()
+        # f.close()
+        # # file = discord.File(io.BytesIO(base64.b64decode(raw)))
+        # await ctx.send_audio_packet(raw)
+        # Handle the exceptions that can occur
+        except discord.ClientException as e:
+            await ctx.send(f"A client exception occurred:\n`{e}`")
 
-        f.close()
-        file = discord.File(io.BytesIO(base64.b64decode(raw)))
-        await ctx.send(file=file)
+        except discord.TypeError as e:
+            await ctx.send(f"TypeError exception:\n`{e}`")
+
+        except discord.OpusNotLoaded as e:
+            await ctx.send(f"OpusNotLoaded exception: \n`{e}`")
 
     @commands.command(pass_context=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
