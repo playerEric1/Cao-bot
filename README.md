@@ -1,6 +1,5 @@
 # CaoBot
 
-
 [![Python3](https://img.shields.io/badge/python-3.10-blue.svg)](https://github.com/Der-Eddy/discord_bot)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Der-Eddy/discord_bot/master/LICENSE)
 [![Discord Server](https://img.shields.io/badge/Support-Discord%20Server-blue.svg)](https://discord.gg/qTT64Nq59W)
