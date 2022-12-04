@@ -23,7 +23,8 @@ invalidQueryStrings = ["Nobody knows.", "It's a mystery.", "I have no idea.", "N
 
 
 @commands.command()
-async def w(ctx, arg):
+async def w(ctx, *, arg):
+    """use '.w' (or any customized command prefix) + any you would like to search on wolframalpha"""
     print("received")
     text = waclient.query(arg)
     for pod in text.pods:

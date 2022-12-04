@@ -12,21 +12,6 @@ async def cat(ctx):
 
 
 @commands.command(pass_comtext=True)
-async def dog(ctx):
-    await _find(ctx.message, 'dog')
-
-
-@commands.command(pass_comtext=True)
-async def fox(ctx):
-    await _find(ctx.message, 'fox')
-
-
-@commands.command(pass_comtext=True)
-async def koala(ctx):
-    await _find(ctx.message, 'koala')
-
-
-@commands.command(pass_comtext=True)
 async def panda(ctx):
     if (randint(1, 3) == 1):
         await _find(ctx.message, 'red_panda')
@@ -46,9 +31,8 @@ async def duck(message):
 
 
 @commands.command(pass_context=True)
-async def slap(ctx, user: discord.User):
-    await ctx.message.delete()
-    await ctx.message.channel.send(f'{ctx.message.author.mention} slaps {user.mention} with a large trout')
+async def slap(ctx):
+    await ctx.send(f'拍了拍 {ctx.author.mention}')
 
 
 async def _find(message, animal):
@@ -63,4 +47,6 @@ async def _find(message, animal):
 
 async def setup(bot):
     bot.add_command(cat)
+    bot.add_command(slap)
     bot.add_command(duck)
+    bot.add_command(panda)

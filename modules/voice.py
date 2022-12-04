@@ -1,14 +1,8 @@
 import asyncio
-import settings
-import random
-import requests
-from gtts import gTTS
 import discord
 from discord.ext import commands
 import io
 import base64
-
-
 # import audio_api
 
 
@@ -26,10 +20,10 @@ class Voice(commands.Cog):
     async def bjl(self, ctx):
         await ctx.voice_client.disconnect()
 
-    # @commands.command(pass_context=True)
-    # async def tts(self, ctx, arg):
-    #     channel = ctx.author.voice.channel
-    #     await channel.send(arg, tts=True)
+    @commands.command(pass_context=True)
+    async def tts(self, ctx, arg):
+        channel = ctx.author.voice.channel
+        await channel.send(arg, tts=True)
 
     @commands.command(pass_context=True)
     async def jiao(self, ctx, *args):
@@ -42,11 +36,12 @@ class Voice(commands.Cog):
         # tts = gTTS(" ".join(args), 'com.au')
         # tts.save('tts.mp3')
         source = await discord.FFmpegOpusAudio.from_probe('demo.mp3',
-                                                          executable='C:\\Users\\Eric_C\\Downloads\\ffmpeg-2022-11-23-git-c8e9cc8d20-full_build\\bin\\ffmpeg.exe',
+                                                          executable='C:\\Users\\Eric_C\\Downloads\\ffmpeg-2022-11-23'
+                                                                     '-git-c8e9cc8d20-full_build\\bin\\ffmpeg.exe',
                                                           method='fallback')
         channel.play(source)
         try:
-            # Lets set the volume to 1
+            # Let's set the volume to 1
             channel.source = discord.PCMVolumeTransformer(channel.source)
             channel.source.volume = 1
         # raw = audio_api.on_message(raw_class)
