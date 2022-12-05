@@ -8,8 +8,6 @@ import discord
 from dotenv import load_dotenv
 from discord.ext import commands
 
-CLIENT_PUBLIC_KEY = os.getenv('CLIENT_PUBLIC_KEY')
-
 this = sys.modules[__name__]
 this.running = False
 
@@ -65,7 +63,7 @@ async def sleep(ctx, arg):
 
 
 @client.command(name='close')
-@func.owner()
+@func.owner()  # Only authorized member can do this command
 async def close(ctx):  # Close the bot
     await ctx.send('我睡觉去啦')
     print("Bot Closed")
@@ -85,8 +83,10 @@ async def main():
             await client.load_extension('modules.minecraft')
             await client.load_extension('modules.wiki')
             await client.load_extension('modules.tex')
+            await client.load_extension('modules.food')
             await client.load_extension('modules.utils')
             await client.load_extension('modules.eval')
+            await client.load_extension('modules.counter')
             await client.load_extension('modules.vector_plot')
             print("load cogs!")
             await client.start(TOKEN)
