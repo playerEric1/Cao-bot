@@ -86,6 +86,8 @@ async def main():
             await client.load_extension('modules.food')
             await client.load_extension('modules.utils')
             await client.load_extension('modules.eval')
+            await client.load_extension('modules.link')
+            await client.load_extension('modules.confirm')
             await client.load_extension('modules.counter')
             await client.load_extension('modules.vector_plot')
             print("load cogs!")
