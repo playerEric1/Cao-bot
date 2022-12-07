@@ -1,4 +1,6 @@
 from discord.ext import commands
+
+import ai
 import settings
 from modules import message_handler
 
@@ -46,10 +48,10 @@ class Events(commands.Cog):
         if message.author == self.client.user:
             return
 
-        reply = message_handler.process_message(message.content)
-        if reply is not None:  # do not send empty messages
-            # await asyncio.sleep(len(reply) / 10 + 0.3) # add some delay before sending
-            await message.channel.send(reply)
+        reply = ai.get_gpt3(message.content)
+        # if reply is not None:  # do not send empty messages
+        # await asyncio.sleep(len(reply) / 10 + 0.3) # add some delay before sending
+        await message.channel.send(reply)
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):

@@ -3,6 +3,10 @@ import discord
 from discord.ext import commands
 import io
 import base64
+
+import settings
+
+
 # import audio_api
 
 
@@ -12,7 +16,10 @@ class Voice(commands.Cog):
 
     @commands.command(pass_context=True)
     async def lai(self, ctx):
-        channel = ctx.author.voice.channel
+        if (ctx.author.voice.channel):
+            channel = ctx.author.voice.channel
+        else:
+            channel = settings.DEFAULT_VOICE_CHANNEL
         print('Bot joined the channel.')
         await channel.connect()
 
