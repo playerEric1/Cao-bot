@@ -18,3 +18,6 @@ DEFAULT_CHANNEL = 925476993158508607  # It should be an int!
 
 # Copy the ID of the channel where you want the bot to send messages
 DEFAULT_VOICE_CHANNEL = 1016671582858530826  # It should be an int!
+
+# ENTER YOU DISCORD-ID
+OWNER = 765212693795307520  # It should be an int!

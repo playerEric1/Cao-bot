@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 from discord.errors import Forbidden
 
+import settings
+
 
 async def send_embed(ctx, embed):
     try:
@@ -23,10 +25,8 @@ class Helper(commands.Cog):
     async def h(self, ctx, *args):
         """Shows all modules of that bot"""
 
-        # !SET THOSE VARIABLES TO MAKE THE COG FUNCTIONAL!
-        prefix = "."  # ENTER YOUR PREFIX - loaded from config, as string or how ever you want!
-        owner = 765212693795307520  # ENTER YOU DISCORD-ID
-        owner_name = "_Ikuta#7350"  # ENTER YOUR USERNAME#1234
+        prefix = settings.COMMAND_PREFIX
+        owner = settings.OWNER
 
         # checks if cog parameter was given
         # if not: sending all modules and commands not associated with a cog
@@ -35,7 +35,7 @@ class Helper(commands.Cog):
             try:
                 owner = ctx.guild.get_member(owner).mention
 
-            except AttributeError as e:
+            except AttributeError:
                 owner = owner
 
             # starting to build embed
@@ -63,11 +63,6 @@ class Helper(commands.Cog):
             if commands_desc:
                 emb.add_field(name='Not belonging to a module', value=commands_desc, inline=False)
 
-            # setting information about author
-            emb.add_field(name="About", value=f"The Bots is developed by {owner_name}, based on discord.py.\n\
-                                    This version of it is maintained by {owner}\n\
-                                    Please visit https://github.com/playerEric1/Cao-bot to submit ideas or bugs.")
-
         # block called when one cog-name is given
         # trying to find matching cog and it's commands
         else:
@@ -88,11 +83,10 @@ class Helper(commands.Cog):
                     # found cog - breaking loop
                     break
 
-            # if input not found
-            # yes, for-loops have an else statement, it's called when no 'break' was issued
+            # if no break is triggered:
             else:
                 emb = discord.Embed(title="What's that?!",
-                                    description=f"I've never heard from a module called `{args[0]}` before :scream:",
+                                    description=f"I've never heard from a module called `{args[0]}`",
                                     color=discord.Color.orange())
 
         # sending reply embed using our own function defined above
