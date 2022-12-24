@@ -1,26 +1,69 @@
 import asyncio
 import discord
 from discord.ext import commands
+import youtube_dl
 import io
 import base64
 
 import settings
 
+# Suppress noise about console usage from errors
+youtube_dl.utils.bug_reports_message = lambda: ''
 
-# import audio_api
+ytdl_format_options = {
+    'format': 'bestaudio/best',
+    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+    'restrictfilenames': True,
+    'noplaylist': True,
+    'nocheckcertificate': True,
+    'ignoreerrors': False,
+    'logtostderr': False,
+    'quiet': True,
+    'no_warnings': True,
+    'default_search': 'auto',
+    'source_address': '0.0.0.0',  # bind to ipv4 since ipv6 addresses cause issues sometimes
+}
+
+ffmpeg_options = {
+    'options': '-vn',
+}
+
+ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
+
+
+class YTDLSource(discord.PCMVolumeTransformer):
+    def __init__(self, source, *, data, volume=0.5):
+        super().__init__(source, volume)
+
+        self.data = data
+
+        self.title = data.get('title')
+        self.url = data.get('url')
+
+    @classmethod
+    async def from_url(cls, url, *, loop=None, stream=False):
+        loop = loop or asyncio.get_event_loop()
+        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
+
+        if 'entries' in data:
+            # take first item from a playlist
+            data = data['entries'][0]
+
+        filename = data['url'] if stream else ytdl.prepare_filename(data)
+        return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
 
 
 class Voice(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.players = {}
 
     @commands.command(pass_context=True)
     async def lai(self, ctx):
-        if (ctx.author.voice.channel):
+        try:
             channel = ctx.author.voice.channel
-        else:
-            channel = settings.DEFAULT_VOICE_CHANNEL
-        print('Bot joined the channel.')
+        except AttributeError:
+            await ctx.send('User is not in accessible voice channel!')
         await channel.connect()
 
     @commands.command(pass_context=True)
@@ -39,24 +82,6 @@ class Voice(commands.Cog):
         except AttributeError:
             await ctx.send('User is not in accessible voice channel!')
 
-        # play audio via GTTS of the user's message
-        # tts = gTTS(" ".join(args), 'com.au')
-        # tts.save('tts.mp3')
-        source = await discord.FFmpegOpusAudio.from_probe('demo.mp3',
-                                                          executable='C:\\Users\\Eric_C\\Downloads\\ffmpeg-2022-11-23'
-                                                                     '-git-c8e9cc8d20-full_build\\bin\\ffmpeg.exe',
-                                                          method='fallback')
-        channel.play(source)
-        try:
-            # Let's set the volume to 1
-            channel.source = discord.PCMVolumeTransformer(channel.source)
-            channel.source.volume = 1
-        # raw = audio_api.on_message(raw_class)
-        # f = open('b64.txt', 'r')
-        # raw = f.read()
-        # f.close()
-        # # file = discord.File(io.BytesIO(base64.b64decode(raw)))
-        # await ctx.send_audio_packet(raw)
         # Handle the exceptions that can occur
         except discord.ClientException as e:
             await ctx.send(f"A client exception occurred:\n`{e}`")
@@ -67,65 +92,65 @@ class Voice(commands.Cog):
         except discord.OpusNotLoaded as e:
             await ctx.send(f"OpusNotLoaded exception: \n`{e}`")
 
-    @commands.command(pass_context=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def play(self, ctx, *, url):
-        return
+    @commands.command()
+    async def play(self, ctx, *, query):
+        """Plays a file from the local filesystem"""
 
-    @commands.command(pass_context=True)
+        source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(query))
+        ctx.voice_client.play(source, after=lambda e: print(f'Player error: {e}') if e else None)
+
+        await ctx.send(f'Now playing: {query}')
+
+    @commands.command()
+    async def yt(self, ctx, *, url):
+        """Plays from a url (almost anything youtube_dl supports)"""
+
+        async with ctx.typing():
+            player = await YTDLSource.from_url(url, loop=self.bot.loop)
+            print(1)
+            ctx.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
+            print(2)
+
+        await ctx.send(f'Now playing: {player.title}')
+
+    @commands.command()
+    async def stream(self, ctx, *, url):
+        """Streams from a url (same as yt, but doesn't predownload)"""
+
+        async with ctx.typing():
+            player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
+            ctx.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
+
+        await ctx.send(f'Now playing: {player.title}')
+
+    @commands.command()
+    async def volume(self, ctx, volume: int):
+        """Changes the player's volume"""
+
+        if ctx.voice_client is None:
+            return await ctx.send("Not connected to a voice channel.")
+
+        ctx.voice_client.source.volume = volume / 100
+        await ctx.send(f"Changed volume to {volume}%")
+
+    @commands.command()
     async def stop(self, ctx):
-        self.voices[ctx.guild.id].songs = asyncio.Queue()
-        self.voices[ctx.guild.id].now_playing = ""
-        self.voices[ctx.guild.id].queue = []
+        """Stops and disconnects the bot from voice"""
+
         await ctx.voice_client.disconnect()
 
-    @commands.command(pass_context=True)
-    @commands.cooldown(1, 10, commands.BucketType.user)
-    async def pause(self, ctx):
-        if ctx.voice_client.is_paused():
-            await ctx.send('I have already paused the audio.')
-        else:
-            ctx.voice_client.pause()
-            await ctx.send('I have paused the audio.')
-
-    @commands.command(pass_context=True)
-    @commands.cooldown(1, 10, commands.BucketType.user)
-    async def resume(self, ctx):
-        if ctx.voice_client.is_playing():
-            await ctx.send('I am already playing audio. Is your head alright?')
-        else:
-            ctx.voice_client.resume()
-            await ctx.send('I have resumed the audio.')
-
-    @commands.command(pass_context=True)
-    @commands.cooldown(1, 10, commands.BucketType.user)
-    async def queue(self, ctx):
-        embed = discord.Embed(Title='Music Queue for ' + ctx.guild.name + ' in ' + ctx.channel.name,
-                              description="Music Queue for " + ctx.guild.name + ' through #' + ctx.channel.name)
-        embed.add_field(name="**[Now Playing]**", value="" + self.voices[ctx.guild.id].now_playing)
-        titles = []
-        if len(self.voices[ctx.guild.id].queue) > 10:
-            titles = self.voices[ctx.guild.id].queue[:10]
-        else:
-            titles = self.voices[ctx.guild.id].queue
-
-        i = 1
-
-        for title in titles:
-            embed.add_field(name="[" + str(i) + "]", value=title)
-            i += 1
-
-        await ctx.send(embed=embed)
-
     @play.before_invoke
-    @pause.before_invoke
-    @resume.before_invoke
-    @stop.before_invoke
-    @queue.before_invoke
-    async def not_in_voice(self, ctx):
+    @yt.before_invoke
+    @stream.before_invoke
+    async def ensure_voice(self, ctx):
         if ctx.voice_client is None:
-            await ctx.send(
-                "I am not connected to a voice channel. Use -connect when in a voice channel to instruct me to join.")
+            if ctx.author.voice:
+                await ctx.author.voice.channel.connect()
+            else:
+                await ctx.send("You are not connected to a voice channel.")
+                raise commands.CommandError("Author not connected to a voice channel.")
+        elif ctx.voice_client.is_playing():
+            ctx.voice_client.stop()
 
 
 async def setup(client):

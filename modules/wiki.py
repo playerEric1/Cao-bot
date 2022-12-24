@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import wikipedia
 
+
 # Parse wikipedia pages into summary contained in Discord embed
 class Wiki(commands.Cog):
     """use '.' (or any customized command prefix) + wiki + the wikipedia page you would like to search"""
@@ -11,8 +12,8 @@ class Wiki(commands.Cog):
 
     @commands.command(pass_context=True)
     async def wiki(self, ctx, *args):
-        """use '.' (or any customized command prefix) + wiki + language (default: English; cn: Chinese; ja: Japanese + the
-        wikipedia page you would like to search """
+        """use '.' (or any customized command prefix) + wiki + language (default: English; cn: Chinese; ja: Japanese
+        + the wikipedia page you would like to search """
 
         # return wikipedia pages of other languages if received such command
         if args[0] == 'cn':

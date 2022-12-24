@@ -2,13 +2,13 @@ import asyncio
 import discord
 from discord.ext import commands
 
+
 class Math(commands.Cog):
     def __init__(self, client):
         self.client = client
 
     @commands.command()
     async def math(self, ctx):
-        print("!!!!!!!!!!")
         first_run = True
         while True:
             if first_run:
