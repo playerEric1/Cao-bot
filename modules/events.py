@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 
 import settings
@@ -49,19 +50,18 @@ class Events(commands.Cog):
 
         reply = message_handler.process_message(message.content)
         if reply is not None:  # do not send empty messages
-            # await asyncio.sleep(len(reply) / 10 + 0.3) # add some delay before sending
             await message.channel.send(reply)
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         if message.author == self.client.user:
             return
-
-        msg = f'{message.author} 刚说了: {message.content}'
-        await message.channel.send(msg)
+        async for entry in message.guild.audit_logs(limit=1, action=discord.AuditLogAction.message_delete):
+            deleter = entry.user
+        await message.channel.send(f"{deleter.name} deleted message by {message.author.name}: {message.content}")
 
     @commands.Cog.listener()
-    async def on_command_error(message, error):
+    async def on_command_error(self, message, error):
         if isinstance(error, commands.errors.CommandNotFound):
             print(error)
             return await message.channel.send("Command not found!")

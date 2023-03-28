@@ -20,9 +20,8 @@ class Misc(commands.Cog):
         self.client = client
 
     @commands.command(pass_comtext=True)
-    async def cat(self, ctx):
-        await ctx.message.delete()
-        await _find(ctx.message, 'cat')
+    async def echo(self, message):
+        await message.channel.send(message.message)
 
     @commands.command(pass_comtext=True)
     async def panda(self, ctx):

@@ -85,7 +85,7 @@ async def main():
             await client.load_extension('modules.utils')
             await client.load_extension('modules.confirm')
             await client.load_extension('modules.counter')
-            await client.load_extension('modules.ai')
+            # await client.load_extension('modules.ai')
             await client.load_extension('modules.vector_plot')
             print("load cogs!")
             await client.start(TOKEN)

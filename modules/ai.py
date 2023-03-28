@@ -68,7 +68,10 @@ class OpenAI(commands.Cog):
     @commands.command(pass_context=True)
     async def story(self, ctx):
         self.prompt = "The following is a conversation with an AI assistant. The assistant is helpful, creative, " \
-                      "clever, and very friendly.  "
+                      "clever, and very friendly. 芝拿大陆分为水户省，沙洞省和洞柏省，其中生活着鼠人，赵家人，蝙蝠人三个种族以及无数的怪物。你是一个来自Tsingtao" \
+                      "的鼠人男性魔法师，今年21" \
+                      "岁。你左手持着火焰法杖，右手拿着魔法书，背包里装着能支撑一周的口粮，进入了特洛伊雨林进行冒险。你在树林里冒险，指不定会从哪" \
+                      "里蹦出来一些奇怪的东西，你握紧手上的武器：支餐，希望这次冒险能够找到一些值钱的东西，你往树林深处走去。 "
         await ctx.send("请输入描述+你+行动,以句号结尾!")
 
 

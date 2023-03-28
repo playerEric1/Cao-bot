@@ -3,7 +3,9 @@ import discord
 from discord.ext import commands
 import youtube_dl
 import io
+from scipy.io import wavfile
 import base64
+import numpy as np
 
 import settings
 
@@ -63,11 +65,12 @@ class Voice(commands.Cog):
         try:
             channel = ctx.author.voice.channel
         except AttributeError:
-            await ctx.send('User is not in accessible voice channel!')
+            await ctx.send('User is not in a voice channel!')
         await channel.connect()
 
     @commands.command(pass_context=True)
     async def bjl(self, ctx):
+        """Stops and disconnects the bot from voice"""
         await ctx.voice_client.disconnect()
 
     @commands.command(pass_context=True)
@@ -102,11 +105,30 @@ class Voice(commands.Cog):
         await ctx.send(f'Now playing: {query}')
 
     @commands.command()
+    async def j(self, ctx):
+        """Plays a file from the local filesystem"""
+        # source = discord.FFmpegPCMAudio(source=io.BufferedIOBase(b'RIFF$\x00\x00\x00WAVEfmt \x10\x00\x00\x00\x01\x00\x01\x00\x00\x04\x00\x00'
+        #                b'\x00\x04\x00\x00\x01\x00\x08\x00data\x00\x00\x00\x00'), format="wav").read()
+        bio = io.BytesIO(b'RIFF$\x00\x00\x00WAVEfmt \x10\x00\x00\x00\x01\x00\x01\x00\x00\x04\x00\x00'
+                         b'\x00\x04\x00\x00\x01\x00\x08\x00data\x00\x00\x00\x00')
+        samplerate = 44100
+        fs = 100
+        # t = np.linspace(0., 1., samplerate)
+        # amplitude = np.iinfo(np.int16).max
+        # data = amplitude * np.sin(2. * np.pi * fs * t)
+        data = np.frombuffer(b'\x10\x00\x00\x00\x01\x00\x01\x00\x00\x04\x00\x00\x00\x04\x00\x00\x01\x00\x08\x00',
+                             dtype=np.int16, count=10)
+        print(data)
+        wavfile.write('t.wav', samplerate, data)
+        source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('t.wav'))
+        ctx.voice_client.play(source, after=lambda e: print(f'Player error: {e}') if e else None)
+
+    @commands.command()
     async def yt(self, ctx, *, url):
-        """Plays from a url (almost anything youtube_dl supports)"""
+        """Plays from an url (almost anything youtube_dl supports)"""
 
         async with ctx.typing():
-            player = await YTDLSource.from_url(url, loop=self.bot.loop)
+            player = await YTDLSource.from_url(url)
             print(1)
             ctx.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
             print(2)
@@ -115,10 +137,11 @@ class Voice(commands.Cog):
 
     @commands.command()
     async def stream(self, ctx, *, url):
-        """Streams from a url (same as yt, but doesn't predownload)"""
+        """Streams from an url (same as yt, but doesn't predownload)"""
 
         async with ctx.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
+            print(1)
             ctx.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
 
         await ctx.send(f'Now playing: {player.title}')
@@ -132,12 +155,6 @@ class Voice(commands.Cog):
 
         ctx.voice_client.source.volume = volume / 100
         await ctx.send(f"Changed volume to {volume}%")
-
-    @commands.command()
-    async def stop(self, ctx):
-        """Stops and disconnects the bot from voice"""
-
-        await ctx.voice_client.disconnect()
 
     @play.before_invoke
     @yt.before_invoke

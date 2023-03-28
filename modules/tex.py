@@ -11,7 +11,7 @@ class Latex(commands.Cog):
         self.client = client
 
     @commands.command(pass_context=True)
-    async def tex(self, ctx, arg):
+    async def tex(self, ctx):
         x, y = symbols("x,y")
         buf = BytesIO()
         print("received!")
@@ -24,7 +24,7 @@ class Latex(commands.Cog):
             return
 
         buf.seek(0)
-        files = discord.File(filename="sample.tex")
+        files = discord.File("sample.tex")
 
         if files:
             print("success!")
